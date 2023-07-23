@@ -13,11 +13,11 @@ interface Props {
 }
 
 export default async function Page({ searchParams }: Props) {
-  const { price, date } = searchParams
-  const priceOrder = price ? `order(price ${price})` : ""
-  const dateOrder = date ? `order(_createdAt ${date})` : ""
+  const { price, date = "desc" } = searchParams
+  const priceOrder = price ? `| order(price ${price})` : ""
+  const dateOrder = date ? `| order(_createdAt ${date})` : ""
   const order = `${priceOrder}${dateOrder}`
-  const products = await client.fetch(groq`*[_type=="product"] | ${order} {
+  const products = await client.fetch(groq`*[_type=="product"] ${order} {
     _id,
     _createdAt,
     name,
