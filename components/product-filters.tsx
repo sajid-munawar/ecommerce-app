@@ -57,7 +57,7 @@ export function ProductFilters() {
           <AccordionItem value={`item-${i}`}>
             <AccordionTrigger>
               <span>
-                Section{" "}
+                Section
                 <span className="ml-1 text-xs font-extrabold uppercase text-gray-400"></span>
               </span>
             </AccordionTrigger>
