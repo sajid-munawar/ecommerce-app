@@ -9,15 +9,26 @@ import { ProductGrid } from "@/components/product-grid"
 import { ProductSort } from "@/components/product-sort"
 
 interface Props {
-  searchParams: { price?: string; date?: string }
+  searchParams: {
+    price?: string
+    date?: string
+    color?: string
+    category?: string
+    size?: string
+  }
 }
 
 export default async function Page({ searchParams }: Props) {
-  const { price, date = "desc" } = searchParams
+  const { price, date = "desc", color, category, size } = searchParams
   const priceOrder = price ? `| order(price ${price})` : ""
   const dateOrder = date ? `| order(_createdAt ${date})` : ""
   const order = `${priceOrder}${dateOrder}`
-  const products = await client.fetch(groq`*[_type=="product"] ${order} {
+  const productsFilter = `_type=="product"`
+  const colorFilter = color ? `&& "${color}" in colors` : ""
+  const sizeFilter = size ? `&& "${size}" in sizes` : ""
+  const categoryFilter = category ? `&& "${category}" in categories` : ""
+  const filter = `*[${productsFilter}${colorFilter}${categoryFilter}${sizeFilter}]`
+  const products = await client.fetch(groq`${filter} ${order} {
     _id,
     _createdAt,
     name,
