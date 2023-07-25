@@ -15,11 +15,12 @@ interface Props {
     color?: string
     category?: string
     size?: string
+    search?: string
   }
 }
 
 export default async function Page({ searchParams }: Props) {
-  const { price, date = "desc", color, category, size } = searchParams
+  const { price, date = "desc", color, category, size, search } = searchParams
   const priceOrder = price ? `| order(price ${price})` : ""
   const dateOrder = date ? `| order(_createdAt ${date})` : ""
   const order = `${priceOrder}${dateOrder}`
@@ -27,7 +28,8 @@ export default async function Page({ searchParams }: Props) {
   const colorFilter = color ? `&& "${color}" in colors` : ""
   const sizeFilter = size ? `&& "${size}" in sizes` : ""
   const categoryFilter = category ? `&& "${category}" in categories` : ""
-  const filter = `*[${productsFilter}${colorFilter}${categoryFilter}${sizeFilter}]`
+  const searchFilter = search ? `&& name match "${search}"` : ""
+  const filter = `*[${productsFilter}${colorFilter}${categoryFilter}${sizeFilter}${searchFilter}]`
   const products = await client.fetch(groq`${filter} ${order} {
     _id,
     _createdAt,
